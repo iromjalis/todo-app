@@ -1,0 +1,7 @@
+.Container {
+  width: 1200px;
+  margin: 0 25px;
+  padding: 0 25px;
+  /* outline: 1px solid red; */
+  box-shadow: 5px 5px 15px 5px #000000;
+}

@@ -1,25 +1,33 @@
-import logo from './logo.svg';
+//styles
 import './App.css';
 
-function App() {
+//components
+import Container from './components/Container/Container.js';
+import Todo from './components/Todo/Todo.js';
+import TodoList from './components/TodoList/TodoList.js';
+
+//data
+const data = {
+  price: 1000,
+  title: 'Data',
+};
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Container>
+        <header className="App-header">
+          <Todo price={data.price} title={data.title}>
+            <TodoList />
+          </Todo>
+        </header>
+      </Container>
+
+      <div className="App">
+        <h1>next App component</h1>
+      </div>
+    </>
   );
-}
+};
 
 export default App;
