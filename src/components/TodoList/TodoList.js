@@ -1,15 +1,25 @@
 import React from 'react';
 
-const TodoList = props => {
+const TodoList = ({ todos, onDeleteTodo, onChange }) => {
+  console.log(todos);
   return (
-    <ol>
-      Todo List:
-      <li> 123</li>
-    </ol>
+    <ul>
+      Todo list:
+      {todos.map(({ id, text, completed }) => (
+        <li key={id}>
+          {text}
+          <input
+            type="checkbox"
+            name="done"
+            id=""
+            checked={completed}
+            onChange={onChange}
+          />
+          <button onClick={() => onDeleteTodo(id)}>Delete</button>
+        </li>
+      ))}
+    </ul>
   );
 };
 
-TodoList.defaultProps = {
-  todoList: 'TodoList',
-};
 export default TodoList;
