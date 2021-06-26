@@ -1,9 +1,8 @@
 import React from 'react';
 
-const TodoList = ({ todos, onDeleteTodo, onChange }) => {
-  console.log(todos);
+const TodoList = ({ todos, onDeleteTodo, onToggleCompleted }) => {
   return (
-    <ul>
+    <ol>
       Todo list:
       {todos.map(({ id, text, completed }) => (
         <li key={id}>
@@ -11,14 +10,13 @@ const TodoList = ({ todos, onDeleteTodo, onChange }) => {
           <input
             type="checkbox"
             name="done"
-            id=""
             checked={completed}
-            onChange={onChange}
+            onChange={() => onToggleCompleted(id)}
           />
           <button onClick={() => onDeleteTodo(id)}>Delete</button>
         </li>
       ))}
-    </ul>
+    </ol>
   );
 };
 
