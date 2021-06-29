@@ -1,0 +1,9 @@
+.panel {
+  margin: 1rem 0;
+}
+
+.input {
+  width: auto;
+  flex-grow: 1;
+  margin-right: 0.3rem;
+}

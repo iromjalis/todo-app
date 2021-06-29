@@ -1,0 +1,33 @@
+.Container {
+  box-shadow: -10px 0px 13px -7px #000000, 10px 0px 13px -7px #000000,
+    5px 5px 15px 5px rgba(0, 0, 0, 0);
+  width: 80vw;
+  margin: auto 25px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 25px;
+}
+button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 20px;
+  border-radius: 25px;
+  margin: 5px;
+  padding: 5px;
+  border: none;
+  background-color: white;
+  border: 1px solid rgb(92, 92, 197);
+}
+button:hover {
+  cursor: pointer;
+  box-shadow: -10px 0px 13px -7px #000000, 10px 0px 13px -7px #000000,
+    5px 5px 15px 5px rgba(0, 0, 0, 0);
+  background-color: rgb(92, 92, 197);
+}
+ul,
+li {
+  margin: 0;
+  padding: 0;
+}

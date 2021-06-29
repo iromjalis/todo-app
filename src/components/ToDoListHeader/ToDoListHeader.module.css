@@ -1,0 +1,14 @@
+.header {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  flex-grow: 1;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: grey;
+}
