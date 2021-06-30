@@ -44,6 +44,9 @@ class App extends PureComponent {
     todos: [],
     filter: FilterEnum.ALL,
     search: '',
+    age: '',
+    agreed: false,
+    gender: '',
   };
 
   handleDelete = id => {
@@ -86,6 +89,11 @@ class App extends PureComponent {
 
   handleAddToDo = label => {
     this.setState(prevState => {
+      const todo = prevState.todos.filter(todo => todo === label);
+      if (todo) {
+        alert('Error');
+        return;
+      }
       const item = this.createItem(label);
       const todos = [...prevState.todos, item];
 
@@ -105,8 +113,6 @@ class App extends PureComponent {
   };
 
   handleImportant = id => {
-    const important = todos.filter(todo => Number(todo.important.length));
-    
     this.setState(state => {
       const todos = this.toggleProperty(state, id, 'important');
       return {
@@ -169,12 +175,12 @@ class App extends PureComponent {
   }
 
   render() {
-    const { todos, filter, search } = this.state;
+    const { todos, filter, search, age } = this.state;
     const doneCount = todos.filter(item => item.done).length;
     const toDoCount = todos.length - doneCount;
     const visibleItems = this.search(this.filter(todos, filter), search);
 
-    const important = todos.filter(todo => Number(todo.important.length));
+    const important = todos.filter(todo => todo.important);
     return (
       <Container>
         {/* <StateDebuger object={this.state} /> */}
@@ -183,7 +189,7 @@ class App extends PureComponent {
             <ToDoHeader
               toDo={toDoCount}
               done={doneCount}
-              important={important}
+              important={Number(important.length)}
             />
             <div className="search-panel d-flex mb-3">
               <SearchPanel handleSearchChange={this.handleSearchChange} />
