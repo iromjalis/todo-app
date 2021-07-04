@@ -1,0 +1,9 @@
+.App {
+  width: 350px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  box-shadow: 5px 5px 15px 5px #000000;
+  padding: 25px;
+  border: 1px solid red;
+}
