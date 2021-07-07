@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Button from "@material-ui/core/Button";
 
 class Counter extends Component {
   static defaultProps = {
@@ -30,12 +31,22 @@ class Counter extends Component {
     return (
       <div>
         <p>Value: {this.state.value}</p>
-        <button type="button" onClick={this.handleIncrement}>
+        <Button
+          variant="contained"
+          color="primary"
+          type="button"
+          onClick={this.handleIncrement}
+        >
           Increment by {step}
-        </button>
-        <button type="button" onClick={this.handleDecrement}>
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          type="button"
+          onClick={this.handleDecrement}
+        >
           Decrement by {step}
-        </button>
+        </Button>
       </div>
     );
   }
