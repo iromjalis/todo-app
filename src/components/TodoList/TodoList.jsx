@@ -8,6 +8,11 @@ class TodoList extends Component {
     todos: this.props.todos,
   };
 
+  handleChange = (e) => {
+    console.log("target", e.target);
+    this.setState({ completed: true });
+  };
+
   render() {
     const { todos, onDeleteTodo } = this.props;
     const total = todos.length;
@@ -21,6 +26,13 @@ class TodoList extends Component {
         <ol>
           {todos.map(({ id, text, completed }) => (
             <li key={id}>
+              <input
+                type="checkbox"
+                name="checkbox"
+                id=""
+                checked={completed}
+                onChange={this.handleChange}
+              />
               {completed ? "✅" : "⛔"} {text}&emsp;
               <Button
                 variant="contained"

@@ -13,7 +13,7 @@ const Filter = (props) => {
 };
 
 Filter.propTypes = {
-  // bla: PropTypes.string,
+  value: PropTypes.string.isRequired,
 };
 
 Filter.defaultProps = {

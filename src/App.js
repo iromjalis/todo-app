@@ -6,6 +6,7 @@ import Panel from "./components/Panel";
 import Phonebook from "./components/Phonebook/Phonebook";
 import TodoList from "./components/TodoList/TodoList";
 import Filter from "./components/Filter";
+import SignUpForm from "./components/SignUpForm";
 
 // const user = {
 //   name: "Jacques Gluke",
@@ -27,6 +28,7 @@ class App extends Component {
       { id: "id-3", text: "Пережить Redux", completed: false },
     ],
     filter: "",
+    value: "",
   };
 
   deleteTodo = (todoId) => {
@@ -35,25 +37,25 @@ class App extends Component {
     }));
   };
 
-  onChange = (value) => {
-    console.log("value", value);
+  onChange = (e) => {
+    console.log("value", e.target.value);
 
-    // this.setState((prevState) => ({
-    //   todos: prevState.todos.filter((todo) => todo.includes(value)),
-    // }));
+    this.setState({ value: e.target.value });
   };
 
   render() {
     const { todos, onChange, filter } = this.state;
     return (
       <div className="App">
-        <header className="App-header">Todo App</header>
-        <Panel title="User profile">
-          {/* <Profile user={user} /> */}
-          {/* <Counter step={1} /> */}
-        </Panel>
+        <SignUpForm />
+        <header className="App-header" />
+        {/* <Panel title="User profile"> 
+          <Profile user={user} />
+          <Counter step={1} />
+        </Panel>*/}
+
         <Phonebook />
-        <Filter value={this.state.filter} onChange={onChange} />
+        <Filter value={this.state.value} onChange={this.onChange} />
         <TodoList todos={this.state.todos} onDeleteTodo={this.deleteTodo} />
       </div>
     );
