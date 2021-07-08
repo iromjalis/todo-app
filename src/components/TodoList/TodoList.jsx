@@ -14,7 +14,7 @@ class TodoList extends Component {
   };
 
   render() {
-    const { todos, onDeleteTodo } = this.props;
+    const { todos, onDeleteTodo, onToggleCompleted } = this.props;
     const total = todos.length;
     const completed = todos.filter((todo) => todo.completed).length;
     return (
@@ -31,7 +31,7 @@ class TodoList extends Component {
                 name="checkbox"
                 id=""
                 checked={completed}
-                onChange={this.handleChange}
+                onChange={() => this.props.onToggleCompleted(id)}
               />
               {completed ? "✅" : "⛔"} {text}&emsp;
               <Button

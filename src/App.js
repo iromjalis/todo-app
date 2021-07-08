@@ -3,10 +3,17 @@ import "./App.css";
 import Panel from "./components/Panel";
 // import Counter from "./components/Counter";
 // import Profile from "./components/Profile";
-import Phonebook from "./components/Phonebook/Phonebook";
+import TodoAdd from "./components/TodoAdd/TodoAdd";
 import TodoList from "./components/TodoList/TodoList";
 import Filter from "./components/Filter";
 import SignUpForm from "./components/SignUpForm";
+
+import shortid from "shortid";
+
+const Gender = {
+  MALE: "male",
+  FEMALE: "female",
+};
 
 // const user = {
 //   name: "Jacques Gluke",
@@ -29,6 +36,14 @@ class App extends Component {
     ],
     filter: "",
     value: "",
+    isOpen: false,
+    agreed: false,
+    gender: null,
+  };
+
+  //*открыть <=> закрыть
+  isOpenChange = () => {
+    this.setState((prevState) => ({ isOpen: !prevState.isOpen }));
   };
 
   deleteTodo = (todoId) => {
@@ -37,26 +52,67 @@ class App extends Component {
     }));
   };
 
-  onChange = (e) => {
+  onChangeFilter = (e) => {
     console.log("value", e.target.value);
 
-    this.setState({ value: e.target.value });
+    this.setState({ filter: e.currentTarget.value });
+  };
+  onSubmit = (state) => {
+    this.setState((prevState) => ({ ...state }));
   };
 
+  toggleCompleted = (todoId) => {
+    this.setState(({ todos }) => ({
+      todos: todos.map((todo) =>
+        todo.id === todoId ? { ...todo, completed: !todo.completed } : todo
+      ),
+    }));
+  };
+
+  loginInputId = shortid.generate();
+
+  addNewTodo = ({ text }) => {
+    const todo = {
+      id: shortid.generate(),
+      text,
+      complited: false,
+    };
+
+    this.setState(({ todos }) => ({ todos: [todo, ...todos] }));
+  };
   render() {
-    const { todos, onChange, filter } = this.state;
+    const { todos, onChangeFilter, filter, isOpen, agreed } = this.state;
+    const visibleTodos = todos.filter((todo) =>
+      todo.text.toLowerCase().includes(filter.toLowerCase())
+    );
     return (
       <div className="App">
-        <SignUpForm />
+        {isOpen ? (
+          <SignUpForm
+            onSubmit={this.onSubmit}
+            onClick={this.isOpenChange}
+            isOpen={isOpen}
+            agreed={agreed}
+          />
+        ) : (
+          <button type="button" onClick={this.isOpenChange}>
+            Registration
+          </button>
+        )}
+
         <header className="App-header" />
         {/* <Panel title="User profile"> 
           <Profile user={user} />
           <Counter step={1} />
         </Panel>*/}
 
-        <Phonebook />
-        <Filter value={this.state.value} onChange={this.onChange} />
-        <TodoList todos={this.state.todos} onDeleteTodo={this.deleteTodo} />
+        <TodoAdd addNewTodo={this.addNewTodo} />
+        <Filter value={filter} onChangeFilter={this.onChangeFilter} />
+        <TodoList
+          todos={visibleTodos}
+          onDeleteTodo={this.deleteTodo}
+          onToggleCompleted={this.toggleCompleted}
+        />
       </div>
     );
   }

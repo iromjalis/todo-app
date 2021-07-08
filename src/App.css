@@ -24,3 +24,7 @@ ul {
 li {
   margin: 5px;
 }
+label {
+  display: inline-block;
+  width: 80vw;
+}

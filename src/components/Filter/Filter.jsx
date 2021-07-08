@@ -3,11 +3,12 @@ import PropTypes from "prop-types";
 //import { Test } from './Filter.styles';
 
 const Filter = (props) => {
-  const { value, onChange } = props;
+  const { value, onChangeFilter } = props;
   return (
     <label>
-      Фильтр по имени
-      <input type="text" value={value} onChange={onChange} />
+      <p>Фильтр по имени:</p>
+      <input type="text" value={value} onChange={onChangeFilter} />
+      <button type="submit">🔍</button>
     </label>
   );
 };
