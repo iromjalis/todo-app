@@ -48,6 +48,18 @@ class SignUpForm extends Component {
     this.setState({ ...INITIAL_STATE });
   };
 
+  // componentDidMount() {
+  //   const form = JSON.parse(localStorage.getItem("form"));
+  //   console.log(form);
+  //   this.setState({ form });
+  // }
+
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (this.state.todos !== prevState.todos) {
+  //     localStorage.setItem("form", JSON.stringify(this.state));
+  //   }
+  // }
+
   render() {
     const { login, email, password, agreed, gender, age } = this.state;
 

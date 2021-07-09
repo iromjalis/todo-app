@@ -7,6 +7,8 @@ import TodoAdd from "./components/TodoAdd/TodoAdd";
 import TodoList from "./components/TodoList/TodoList";
 import Filter from "./components/Filter";
 import SignUpForm from "./components/SignUpForm";
+import ArticleList from "./components/ArticleList/ArticleList";
+import Modal from "./components/Modal/Modal";
 
 import shortid from "shortid";
 
@@ -39,11 +41,16 @@ class App extends Component {
     isOpen: false,
     agreed: false,
     gender: null,
+    showModal: false,
+  };
+
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({ showModal: !showModal }));
   };
 
   //*открыть <=> закрыть
   isOpenChange = () => {
-    this.setState((prevState) => ({ isOpen: !prevState.isOpen }));
+    this.setState(({ isOpen }) => ({ isOpen: !isOpen }));
   };
 
   deleteTodo = (todoId) => {
@@ -80,8 +87,22 @@ class App extends Component {
 
     this.setState(({ todos }) => ({ todos: [todo, ...todos] }));
   };
+
+  componentDidMount() {
+    const todos = JSON.parse(localStorage.getItem("todos"));
+
+    this.setState({ todos });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.todos !== prevState.todos) {
+      localStorage.setItem("todos", JSON.stringify(this.state.todos));
+    }
+  }
+
   render() {
-    const { todos, onChangeFilter, filter, isOpen, agreed } = this.state;
+    const { todos, onChangeFilter, filter, isOpen, agreed, showModal } =
+      this.state;
     const visibleTodos = todos.filter((todo) =>
       todo.text.toLowerCase().includes(filter.toLowerCase())
     );
@@ -99,6 +120,8 @@ class App extends Component {
             Registration
           </button>
         )}
+
+        {showModal && <Modal />}
 
         <header className="App-header" />
         {/* <Panel title="User profile"> 
