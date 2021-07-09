@@ -1,57 +1,49 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { createPortal } from "react-dom";
 import "./Modal.scss";
 
 const modalRoot = document.querySelector("#modal-root");
 
 class Modal extends Component {
-  state = {
-    hasError: false,
+  intervalId = null;
+  componentDidMount() {
+    // console.log("Modal componentDidMount");
+    window.addEventListener("keydown", this.handleKeyDown);
+  }
+
+  componentWillUnmount() {
+    // console.log("Modal componentWillUnmount");
+    window.removeEventListener("keydown", this.handleKeyDown);
+    this.intervalId = null;
+  }
+
+  handleKeyDown = (e) => {
+    if (e.code === "Escape") {
+      console.log("Нажали ESC, нужно закрыть модалку");
+
+      this.props.onClose();
+    }
   };
 
-  componentWillMount = () => {
-    console.log("Modal will mount");
-  };
+  handleBackdropClick = (event) => {
+    // console.log("Кликнули в бекдроп");
 
-  componentDidMount = () => {
-    console.log("Modal mounted");
-  };
+    // console.log("currentTarget: ", event.currentTarget);
+    // console.log("target: ", event.target);
 
-  componentWillReceiveProps = (nextProps) => {
-    console.log("Modal will receive props", nextProps);
-  };
-
-  componentWillUpdate = (nextProps, nextState) => {
-    console.log("Modal will update", nextProps, nextState);
-  };
-
-  componentDidUpdate = () => {
-    console.log("Modal did update");
-  };
-
-  componentWillUnmount = () => {
-    console.log("Modal will unmount");
+    if (event.currentTarget === event.target) {
+      this.props.onClose();
+    }
   };
 
   render() {
-    return (
-      (
-        <div className="ModalBackdrop" onClick={this.handleBackdropClick}>
-          <div className="ModalContent">{this.props.children}</div>
-        </div>
-      ),
+    return createPortal(
+      <div className="Modal__backdrop" onClick={this.handleBackdropClick}>
+        <div className="Modal__content">{this.props.children}</div>
+      </div>,
       modalRoot
     );
   }
 }
-
-Modal.propTypes = {
-  // bla: PropTypes.string,
-};
-
-Modal.defaultProps = {
-  // bla: 'test',
-};
 
 export default Modal;

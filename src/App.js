@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import "./App.css";
 import Panel from "./components/Panel";
-// import Counter from "./components/Counter";
-// import Profile from "./components/Profile";
+import Counter from "./components/Counter";
+import Profile from "./components/Profile";
 import TodoAdd from "./components/TodoAdd/TodoAdd";
 import TodoList from "./components/TodoList/TodoList";
 import Filter from "./components/Filter";
@@ -17,17 +17,17 @@ const Gender = {
   FEMALE: "female",
 };
 
-// const user = {
-//   name: "Jacques Gluke",
-//   tag: "jgluke",
-//   location: "Ocho Rios, Jamaica",
-//   avatar: "https://www.flaticon.com/svg/static/icons/svg/3784/3784184.svg",
-//   stats: {
-//     followers: 5603,
-//     views: 4827,
-//     likes: 1308,
-//   },
-// };
+const user = {
+  name: "Jacques Gluke",
+  tag: "jgluke",
+  location: "Ocho Rios, Jamaica",
+  avatar: "https://www.flaticon.com/svg/static/icons/svg/3784/3784184.svg",
+  stats: {
+    followers: 5603,
+    views: 4827,
+    likes: 1308,
+  },
+};
 
 class App extends Component {
   state = {
@@ -43,10 +43,17 @@ class App extends Component {
     gender: null,
     showModal: false,
   };
+  componentDidMount() {
+    const todos = JSON.parse(localStorage.getItem("todos"));
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({ showModal: !showModal }));
-  };
+    this.setState({ todos });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.todos !== prevState.todos) {
+      localStorage.setItem("todos", JSON.stringify(this.state.todos));
+    }
+  }
 
   //*открыть <=> закрыть
   isOpenChange = () => {
@@ -76,6 +83,10 @@ class App extends Component {
     }));
   };
 
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({ showModal: !showModal }));
+  };
+
   loginInputId = shortid.generate();
 
   addNewTodo = ({ text }) => {
@@ -88,18 +99,6 @@ class App extends Component {
     this.setState(({ todos }) => ({ todos: [todo, ...todos] }));
   };
 
-  componentDidMount() {
-    const todos = JSON.parse(localStorage.getItem("todos"));
-
-    this.setState({ todos });
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.todos !== prevState.todos) {
-      localStorage.setItem("todos", JSON.stringify(this.state.todos));
-    }
-  }
-
   render() {
     const { todos, onChangeFilter, filter, isOpen, agreed, showModal } =
       this.state;
@@ -107,36 +106,46 @@ class App extends Component {
       todo.text.toLowerCase().includes(filter.toLowerCase())
     );
     return (
-      <div className="App">
-        {isOpen ? (
-          <SignUpForm
-            onSubmit={this.onSubmit}
-            onClick={this.isOpenChange}
-            isOpen={isOpen}
-            agreed={agreed}
-          />
-        ) : (
+      <>
+        {/* Modal */}
+        {showModal && (
+          <Modal onClose={this.toggleModal}>
+            <TodoAdd addNewTodo={this.addNewTodo} onClick={this.toggleModal} />
+            <button type="button" onClick={this.toggleModal}>
+              X
+            </button>
+          </Modal>
+        )}
+        <div className="App">
+          {/* form */}
+          {isOpen && (
+            <SignUpForm
+              onSubmit={this.onSubmit}
+              onClick={this.isOpenChange}
+              isOpen={isOpen}
+              agreed={agreed}
+            />
+          )}
+
           <button type="button" onClick={this.isOpenChange}>
             Registration
           </button>
-        )}
-
-        {showModal && <Modal />}
-
-        <header className="App-header" />
-        {/* <Panel title="User profile"> 
-          <Profile user={user} />
-          <Counter step={1} />
-        </Panel>*/}
-
-        <TodoAdd addNewTodo={this.addNewTodo} />
-        <Filter value={filter} onChangeFilter={this.onChangeFilter} />
-        <TodoList
-          todos={visibleTodos}
-          onDeleteTodo={this.deleteTodo}
-          onToggleCompleted={this.toggleCompleted}
-        />
-      </div>
+          <header className="App-header" />
+          {/* <Panel title="User profile">
+            <Profile user={user} />
+            <Counter step={1} />
+          </Panel> */}
+          <Filter value={filter} onChangeFilter={this.onChangeFilter} />
+          <TodoList
+            todos={visibleTodos}
+            onDeleteTodo={this.deleteTodo}
+            onToggleCompleted={this.toggleCompleted}
+          />
+        </div>
+        <button type="button" onClick={this.toggleModal}>
+          Open modal
+        </button>
+      </>
     );
   }
 }

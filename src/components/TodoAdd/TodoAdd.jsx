@@ -1,21 +1,22 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 
 //import { Test } from './Phonebook.styles';
 
-class TodoAdd extends Component {
+class TodoAdd extends PureComponent {
   state = {
     text: "",
     value: 0,
     enable: true,
   };
-
+  componentWillUnmount() {}
   handleSubmit = (e) => {
     e.preventDefault();
 
     this.props.addNewTodo(this.state);
     this.toggle();
+    this.props.onClick();
   };
 
   handleChange = (e) => {
@@ -26,9 +27,7 @@ class TodoAdd extends Component {
     this.setState((prevState) => ({
       enable: !prevState.enable,
     }));
-    setTimeout(() => {
-      this.setState({ enable: true });
-    }, 500);
+
     this.setState({ text: "" });
   };
   render() {
