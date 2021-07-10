@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 //import { Test } from './TodoList.styles';
-import Button from "@material-ui/core/Button";
+import TodoItem from "./TodoItem";
 
 class TodoList extends Component {
   state = {
@@ -26,21 +26,15 @@ class TodoList extends Component {
         <ol>
           {todos.map(({ id, text, completed }) => (
             <li key={id}>
-              <input
-                type="checkbox"
-                name="checkbox"
-                id=""
-                checked={completed}
-                onChange={() => this.props.onToggleCompleted(id)}
+              <TodoItem
+                id={id}
+                text={text}
+                completed={completed}
+                onToggleCompleted={() => onToggleCompleted(id)}
+                onDeleteTodo={() => {
+                  onDeleteTodo(id);
+                }}
               />
-              {completed ? "✅" : "⛔"} {text}&emsp;
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => onDeleteTodo(id)}
-              >
-                &#10060; Delete
-              </Button>
             </li>
           ))}
         </ol>
