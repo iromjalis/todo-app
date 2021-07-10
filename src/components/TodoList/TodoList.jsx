@@ -15,6 +15,7 @@ class TodoList extends Component {
 
   render() {
     const { todos, onDeleteTodo, onToggleCompleted } = this.props;
+    console.log("todos", todos);
     const total = todos.length;
     const completed = todos.filter((todo) => todo.completed).length;
     return (

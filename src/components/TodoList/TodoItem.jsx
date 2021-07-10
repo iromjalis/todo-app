@@ -11,17 +11,21 @@ const TodoItem = ({ id, text, completed, onDeleteTodo, onToggleCompleted }) => (
     <input
       type="checkbox"
       name="checkbox"
-      id=""
+      id="id"
       checked={completed}
       onChange={onToggleCompleted}
     />
-    {completed ? "✅" : "⛔"} {text}&emsp;
+    {completed ? "✅" : "⛔"}
     {/* <Button variant="contained" color="primary" onClick={onDeleteTodo}>
       &#10060; Delete
     </Button> */}
-    <IconBtn onClick={onDeleteTodo(id)} placeholder="Click to delete">
+    <IconBtn
+      onClick={onDeleteTodo(id)}
+      placeholder="Click to delete"
+      aria-label="Удалить todo"
+    >
       <DeleteBtn width="20" height="20" fill="#fff" />
-    </IconBtn>{" "}
+    </IconBtn>
   </div>
 );
 

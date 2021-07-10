@@ -162,7 +162,7 @@ class App extends Component {
             <AddIcon width="20" height="20" fill="#fff" />
           </IconBtn>
           <h3>Click to add NEW todo</h3>
-          <Tabs tabs={todos} toggleCompleted={this.toggleCompleted} />
+          <Tabs tabs={tabs} toggleCompleted={this.toggleCompleted} />
 
           <TodoList
             todos={visibleTodos}
