@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import "./App.css";
-import Panel from "./components/Panel";
+// import Panel from "./components/Panel";
 import TodoList from "./components/TodoList/TodoList";
 import Filter from "./components/Filter";
 import SignUpForm from "./components/SignUpForm";
 import AddNewTodo from "./components/AddNewTodo/AddNewTodo";
 import Modal from "./components/Modal/Modal";
 import ArticleList from "./components/ArticleList/ArticleList";
-
-import ContentLoader, { BulletList } from "react-content-loader";
+import ArticlesApi from "./services/ArticlesApi";
+import { BulletList } from "react-content-loader";
+import Searching from "./components/Searching/Searching";
 
 import axios from "axios";
 import shortid from "shortid";
@@ -24,16 +25,24 @@ class App extends Component {
     filter: "",
     showModal: false,
     isLoading: false,
+    error: null,
+    searching: "",
   };
   componentDidMount() {
     this.setState({ isLoading: true });
-    axios
-      .get("https://hn.algolia.com/api/v1/search?query=react")
-      .then((response) => {
-        console.log("articles", response.data);
 
-        this.setState({ articles: response.data.hits, isLoading: false });
-      });
+    const { searching } = this.state;
+    // axios
+    //   .get("https://hn.algolia.com/api/v1/search?query=react")
+    //   .then((response) => {
+    //     console.log("articles", response.data);
+
+    //     this.setState({ articles: response.data.hits });
+    //   })
+    ArticlesApi.fetchArticlesWithQuery(this.state.searching)
+      .then((articles) => this.setState({ articles }))
+      .catch((error) => this.setState({ error }))
+      .finally(() => this.setState({ isLoading: false }));
 
     const todos = localStorage.getItem("todos");
     const parsedTodos = JSON.parse(todos);
@@ -43,10 +52,19 @@ class App extends Component {
     }
   }
   componentDidUpdate(prevProps, prevState) {
+    if (prevState.searching !== this.state.searching) {
+      console.log("changed");
+      ArticlesApi.fetchArticlesWithQuery(this.state.searching)
+        .then((articles) => this.setState({ articles }))
+        .catch((error) => this.setState({ error }))
+        .finally(() => this.setState({ isLoading: false }));
+    }
     if (prevState.state !== this.state) {
       localStorage.setItem("todos", JSON.stringify(this.state.todos));
     }
   }
+
+  componentWillUpdate(nextProps, nextState) {}
   deleteTodo = (todoId) => {
     this.setState((prevState) => ({
       todos: prevState.todos.filter((todo) => todo.id !== todoId),
@@ -87,10 +105,22 @@ class App extends Component {
   toggleModal = () => {
     this.setState(({ showModal }) => ({ showModal: !showModal }));
   };
+  articlesSearching = (text) => {
+    this.setState({ searching: text });
+  };
 
   render() {
-    const { todos, onChange, filter, showModal, agreed, articles, isLoading } =
-      this.state;
+    const {
+      todos,
+      onChange,
+      filter,
+      showModal,
+      agreed,
+      articles,
+      isLoading,
+      error,
+      searching,
+    } = this.state;
     const visible = todos.filter(({ text }) =>
       text.toLowerCase().includes(filter.toLowerCase())
     );
@@ -98,7 +128,10 @@ class App extends Component {
       <>
         <div className="App">
           API
-          {isLoading ? <BulletList /> : <ArticleList articles={articles} />}
+          <Searching searching={searching} onSubmit={this.articlesSearching} />
+          {error && <p>Whoops, something went wrong: {error}</p>}
+          {isLoading && <BulletList />}
+          {articles.length > 0 && <ArticleList articles={articles} />}
         </div>
         <div className="App">
           {showModal && (

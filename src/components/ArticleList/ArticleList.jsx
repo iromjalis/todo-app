@@ -3,7 +3,18 @@ import PropTypes from "prop-types";
 //import { Test } from './ArticleList.styles';
 
 class ArticleList extends PureComponent {
-  state = {};
+  state = {
+    url: "",
+    title: "",
+  };
+  handleClick = (e) => {
+    console.log("handleClick");
+    console.dir(e.target);
+    this.setState({
+      title: e.target.textContent,
+      url: e.target.attributes.href.nodeValue,
+    });
+  };
 
   render() {
     const { articles } = this.props;
@@ -11,7 +22,7 @@ class ArticleList extends PureComponent {
       <div className="ArticleListWrapper">
         <ul>
           {articles.map(({ objectID, url, title }) => (
-            <li key={objectID}>
+            <li key={objectID} onClick={this.handleClick}>
               <a href={url} target="_blank" rel="noreferrer noopener">
                 {title}
               </a>
