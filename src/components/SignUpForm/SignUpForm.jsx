@@ -1,71 +1,49 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-//import { Test } from './SignUpForm.styles';
-
-const Gender = {
-  MALE: "male",
-  FEMALE: "female",
+import "./SignUpForm.css";
+const LEVEL = {
+  junior: "junior",
+  middle: "middle",
+  senior: "senior",
 };
-
-const INITIAL_STATE = {
+const STATE = {
   login: "",
-  email: "",
   password: "",
+  email: "",
   agreed: false,
-  gender: null,
-  age: "",
+  level: null,
 };
 
 class SignUpForm extends Component {
   state = {
-    ...INITIAL_STATE,
+    ...STATE,
   };
 
   // * Отвечает за обновление состояния
-  handleChange = (e) => {
-    const { name, value, type, agreed, checked } = e.target;
+  handleChange = ({ target }) => {
+    const { name, value, checked, type } = target;
+    // Если тип элемента checkbox, берем значение checked,
+    // в противном случае value
     this.setState({ [name]: type === "checkbox" ? checked : value });
+    console.log(this.state.checked);
   };
 
   // * Вызывается при отправке формы
   handleSubmit = (evt) => {
     evt.preventDefault();
-
-    const { login, email, password } = this.state;
-
-    console.log(`
-      Login: ${login}
-      Email: ${email}
-      Password: ${password}
-    `);
-
+    console.log(`Signed up as: ${this.state.login}`);
+    console.log(this.state);
+    // Проп который передается форме для вызова при сабмите
     this.props.onSubmit({ ...this.state });
-    this.props.onClick();
-    this.reset();
+    this.props.onClose();
+    this.setState({ ...STATE });
   };
-
-  reset = () => {
-    this.setState({ ...INITIAL_STATE });
-  };
-
-  // componentDidMount() {
-  //   const form = JSON.parse(localStorage.getItem("form"));
-  //   console.log(form);
-  //   this.setState({ form });
-  // }
-
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (this.state.todos !== prevState.todos) {
-  //     localStorage.setItem("form", JSON.stringify(this.state));
-  //   }
-  // }
 
   render() {
-    const { login, email, password, agreed, gender, age } = this.state;
+    const { login, password, email, agreed, level } = this.state;
 
     return (
       <form onSubmit={this.handleSubmit}>
-        <h3>Registration form</h3>
         <label>
           Name
           <input
@@ -100,40 +78,39 @@ class SignUpForm extends Component {
         <section>
           <h2>Choose your gender</h2>
           <label>
-            Male
+            Junior
             <input
               type="radio"
-              checked={gender === Gender.MALE}
-              name="gender"
-              value={Gender.MALE}
+              checked={level === LEVEL.junior}
+              name="level"
+              value={LEVEL.junior}
               onChange={this.handleChange}
             />
           </label>
           <label>
-            Female
+            Middle
             <input
               type="radio"
-              checked={gender === Gender.FEMALE}
-              name="gender"
-              value={Gender.FEMALE}
+              checked={level === LEVEL.middle}
+              name="level"
+              value={LEVEL.middle}
+              onChange={this.handleChange}
+            />
+          </label>
+          <label>
+            Senior
+            <input
+              type="radio"
+              checked={level === LEVEL.senior}
+              name="level"
+              value={LEVEL.senior}
               onChange={this.handleChange}
             />
           </label>
         </section>
 
         <label>
-          Choose your age
-          <select name="age" value={age} onChange={this.handleChange}>
-            <option value="" disabled>
-              ...
-            </option>
-            <option value=">18">менее 18</option>
-            <option value="18<">более 18+ </option>
-          </select>
-        </label>
-        <h2></h2>
-        <label>
-          <span>Agree to terms</span>
+          Agree to terms
           <input
             name="agreed"
             type="checkbox"
@@ -141,9 +118,8 @@ class SignUpForm extends Component {
             onChange={this.handleChange}
           />
         </label>
-
-        <button type="submit" onClick={this.props.onClick} disabled={!agreed}>
-          Sign up as {login}
+        <button type="submit" disabled={!agreed} onClick={this.handleChange}>
+          Sign up as <b>{login}</b>
         </button>
       </form>
     );

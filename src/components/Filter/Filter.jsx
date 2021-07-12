@@ -3,18 +3,18 @@ import PropTypes from "prop-types";
 //import { Test } from './Filter.styles';
 
 const Filter = (props) => {
-  const { value, onChangeFilter } = props;
+  const { filter, onChange } = props;
   return (
     <label>
-      <p>Фильтр по имени:</p>
-      <input type="text" value={value} onChange={onChangeFilter} />
-      <button type="submit">🔍</button>
+      Фильтр по имени
+      <input type="text" value={filter} onChange={onChange} />
     </label>
   );
 };
 
 Filter.propTypes = {
-  value: PropTypes.string.isRequired,
+  filter: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
 Filter.defaultProps = {

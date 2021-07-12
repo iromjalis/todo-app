@@ -1,12 +1,11 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
 import { createPortal } from "react-dom";
-import "./Modal.scss";
-import "../../App.css";
+import styles from "./Modal.module.css";
 
 const modalRoot = document.querySelector("#modal-root");
 
-class Modal extends Component {
-  intervalId = null;
+class Modal extends PureComponent {
   componentDidMount() {
     // console.log("Modal componentDidMount");
     window.addEventListener("keydown", this.handleKeyDown);
@@ -15,39 +14,37 @@ class Modal extends Component {
   componentWillUnmount() {
     // console.log("Modal componentWillUnmount");
     window.removeEventListener("keydown", this.handleKeyDown);
-    this.intervalId = null;
   }
 
   handleKeyDown = (e) => {
     if (e.code === "Escape") {
-      console.log("Нажали ESC, нужно закрыть модалку");
+      // console.log("Нажали ESC, нужно закрыть модалку");
 
       this.props.onClose();
     }
   };
-
-  handleBackdropClick = (event) => {
-    // console.log("Кликнули в бекдроп");
-
-    // console.log("currentTarget: ", event.currentTarget);
-    // console.log("target: ", event.target);
-
-    if (event.currentTarget === event.target) {
+  handleBackdropClick = (e) => {
+    if (e.currentTarget === e.target) {
       this.props.onClose();
     }
   };
 
   render() {
     return createPortal(
-      <div
-        className=" Modal Modal__backdrop"
-        onClick={this.handleBackdropClick}
-      >
-        <div className="Modal__content">{this.props.children}</div>
+      <div className={styles.ModalBackdrop} onClick={this.handleBackdropClick}>
+        <div className={styles.ModalContent}>{this.props.children}</div>
       </div>,
       modalRoot
     );
   }
 }
+
+Modal.propTypes = {
+  // bla: PropTypes.string,
+};
+
+Modal.defaultProps = {
+  // bla: 'test',
+};
 
 export default Modal;

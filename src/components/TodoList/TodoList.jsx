@@ -1,21 +1,30 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 //import { Test } from './TodoList.styles';
-import TodoItem from "./TodoItem";
+import Button from "@material-ui/core/Button";
 
 class TodoList extends Component {
   state = {
     todos: this.props.todos,
   };
 
-  handleChange = (e) => {
-    console.log("target", e.target);
-    this.setState({ completed: true });
+  // handleChange = ({ target }) => {
+  //   const { name, value, checked, type } = target;
+  //   // Если тип элемента checkbox, берем значение checked,
+  //   // в противном случае value
+  //   this.setState({ [name]: type === "checkbox" ? checked : value });
+  //   console.log(this.state.checked);
+  // };
+
+  handleChange = ({ target }) => {
+    const { name, value, type, checked } = target;
+
+    this.setState({ [name]: type === "checkbox" ? checked : value });
+    console.log(this.state.checked);
   };
 
   render() {
-    const { todos, onDeleteTodo, onToggleCompleted } = this.props;
-    console.log("todos", todos);
+    const { todos, onDeleteTodo } = this.props;
     const total = todos.length;
     const completed = todos.filter((todo) => todo.completed).length;
     return (
@@ -27,15 +36,21 @@ class TodoList extends Component {
         <ol>
           {todos.map(({ id, text, completed }) => (
             <li key={id}>
-              <TodoItem
-                id={id}
-                text={text}
-                completed={completed}
-                onToggleCompleted={() => onToggleCompleted(id)}
-                onDeleteTodo={() => {
-                  onDeleteTodo(id);
-                }}
+              <input
+                type="checkbox"
+                name="completed"
+                id=""
+                checked={completed}
+                onChange={() => this.props.toggleCompleted(id)}
               />
+              {completed ? "✅" : "⛔"} {text}&emsp;
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => onDeleteTodo(id)}
+              >
+                &#10060; Delete
+              </Button>
             </li>
           ))}
         </ol>
