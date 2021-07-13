@@ -8,6 +8,7 @@ import AddNewTodo from "./components/AddNewTodo/AddNewTodo";
 import Modal from "./components/Modal/Modal";
 import ArticleList from "./components/ArticleList/ArticleList";
 import ArticlesApi from "./services/ArticlesApi";
+import TodoApi from "./services/TodoApi";
 import { BulletList } from "react-content-loader";
 import Searching from "./components/Searching/Searching";
 
@@ -17,11 +18,7 @@ import shortid from "shortid";
 class App extends Component {
   state = {
     articles: [],
-    todos: [
-      { id: "id-1", text: "Выучить основы React", completed: true },
-      { id: "id-2", text: "Разобраться с React Router", completed: false },
-      { id: "id-3", text: "Пережить Redux", completed: false },
-    ],
+    todos: [],
     filter: "",
     showModal: false,
     isLoading: false,
@@ -32,43 +29,36 @@ class App extends Component {
     this.setState({ isLoading: true });
 
     const { searching } = this.state;
-    // axios
-    //   .get("https://hn.algolia.com/api/v1/search?query=react")
-    //   .then((response) => {
-    //     console.log("articles", response.data);
 
-    //     this.setState({ articles: response.data.hits });
-    //   })
     ArticlesApi.fetchArticlesWithQuery(this.state.searching)
       .then((articles) => this.setState({ articles }))
       .catch((error) => this.setState({ error }))
       .finally(() => this.setState({ isLoading: false }));
 
-    const todos = localStorage.getItem("todos");
-    const parsedTodos = JSON.parse(todos);
-
-    if (parsedTodos) {
-      this.setState({ todos: parsedTodos });
-    }
+    // axios
+    //   .get("http://localhost:3000/todos/")
+    //   .then(({ data }) => this.setState({ todos: data }))
+    TodoApi.fetchTodos()
+      .then((todos) => this.setState({ todos }))
+      .catch((error) => this.setState({ error }))
+      .finally(() => this.setState({ isLoading: false }));
   }
   componentDidUpdate(prevProps, prevState) {
     if (prevState.searching !== this.state.searching) {
-      console.log("changed");
       ArticlesApi.fetchArticlesWithQuery(this.state.searching)
         .then((articles) => this.setState({ articles }))
         .catch((error) => this.setState({ error }))
         .finally(() => this.setState({ isLoading: false }));
     }
-    if (prevState.state !== this.state) {
-      localStorage.setItem("todos", JSON.stringify(this.state.todos));
-    }
   }
 
-  componentWillUpdate(nextProps, nextState) {}
   deleteTodo = (todoId) => {
-    this.setState((prevState) => ({
-      todos: prevState.todos.filter((todo) => todo.id !== todoId),
-    }));
+    // axios.delete(`http://localhost:3000/todos/${todoId}`)
+    TodoApi.deleteTodo(todoId).then(() => {
+      this.setState((prevState) => ({
+        todos: prevState.todos.filter((todo) => todo.id !== todoId),
+      }));
+    });
   };
 
   onChange = (e) => {
@@ -84,23 +74,40 @@ class App extends Component {
   };
 
   addNewTodo = (text) => {
-    const todo = {
+    const todoData = {
       id: shortid.generate(),
       text,
       completed: false,
     };
-    // console.log("todo", todo);
-    const { todos } = this.state;
-    this.setState(({ todos }) => ({ todos: [todo, ...todos] }));
+
+    // axios
+    //   .post("http://localhost:3000/todos/", todo)
+    TodoApi.addTodo(todoData)
+      .then((todo) => {
+        this.setState(({ todos }) => ({ todos: [todo, ...todos] }));
+      })
+      .catch((error) => this.setState({ error }))
+      .finally(() => this.setState({ isLoading: false }));
+
     this.toggleModal();
   };
 
   toggleCompleted = (todoId) => {
-    this.setState(({ todos }) => ({
-      todos: todos.map((todo) =>
-        todo.id === todoId ? { ...todo, completed: !todo.completed } : todo
-      ),
-    }));
+    const todo = this.state.todos.find(({ id }) => id === todoId);
+
+    const { completed } = todo;
+
+    // axios
+    //   .patch(`http://localhost:3000/todos/${todoId}`, { completed: !completed })
+    TodoApi.updateTodo(todoId, { completed: !completed }).then(
+      (updatedTodo) => {
+        this.setState(({ todos }) => ({
+          todos: todos.map((todo) =>
+            todo.id === updatedTodo.id ? updatedTodo : todo
+          ),
+        }));
+      }
+    );
   };
   toggleModal = () => {
     this.setState(({ showModal }) => ({ showModal: !showModal }));

@@ -1,5 +1,19 @@
 {
-  "posts": [{ "id": 1, "title": "json-server", "author": "typicode" }],
-  "comments": [{ "id": 1, "body": "some comment", "postId": 1 }],
-  "profile": { "name": "typicode" }
+  "todos": [
+    {
+      "id": "id-2",
+      "text": "Разобраться с React Router",
+      "completed": true
+    },
+    {
+      "id": "id-3",
+      "text": "Пережить Redux",
+      "completed": false
+    },
+    {
+      "id": "LAsQIyg_x",
+      "text": "Выучить основы React",
+      "completed": false
+    }
+  ]
 }

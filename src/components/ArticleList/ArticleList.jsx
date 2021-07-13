@@ -12,7 +12,7 @@ class ArticleList extends PureComponent {
     console.dir(e.target);
     this.setState({
       title: e.target.textContent,
-      url: e.target.attributes.href.nodeValue,
+      url: e.target.attributes.href,
     });
   };
 
@@ -24,7 +24,7 @@ class ArticleList extends PureComponent {
           {articles.map(({ objectID, url, title }) => (
             <li key={objectID} onClick={this.handleClick}>
               <a href={url} target="_blank" rel="noreferrer noopener">
-                {title}
+                {title || "Sorry, no title 😥"}
               </a>
             </li>
           ))}

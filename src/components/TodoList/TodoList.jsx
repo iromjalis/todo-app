@@ -8,14 +8,6 @@ class TodoList extends Component {
     todos: this.props.todos,
   };
 
-  // handleChange = ({ target }) => {
-  //   const { name, value, checked, type } = target;
-  //   // Если тип элемента checkbox, берем значение checked,
-  //   // в противном случае value
-  //   this.setState({ [name]: type === "checkbox" ? checked : value });
-  //   console.log(this.state.checked);
-  // };
-
   handleChange = ({ target }) => {
     const { name, value, type, checked } = target;
 
