@@ -18,7 +18,23 @@ import shortid from "shortid";
 class App extends Component {
   state = {
     articles: [],
-    todos: [],
+    todos: [
+      {
+        id: "id-2",
+        text: "Разобраться с React Router",
+        completed: true,
+      },
+      {
+        id: "id-3",
+        text: "Пережить Redux",
+        completed: false,
+      },
+      {
+        id: "LAsQIyg_x",
+        text: "Выучить основы React",
+        completed: false,
+      },
+    ],
     filter: "",
     showModal: false,
     isLoading: false,
@@ -35,15 +51,17 @@ class App extends Component {
       .catch((error) => this.setState({ error }))
       .finally(() => this.setState({ isLoading: false }));
 
-    // axios
-    //   .get("http://localhost:3000/todos/")
-    //   .then(({ data }) => this.setState({ todos: data }))
-    TodoApi.fetchTodos()
-      .then((todos) => this.setState({ todos }))
-      .catch((error) => this.setState({ error }))
-      .finally(() => this.setState({ isLoading: false }));
+    if (localStorage.getItem("todos")) {
+      this.setState({ todos: JSON.parse(localStorage.getItem("todos")) });
+    }
+    if (localStorage.getItem("login")) {
+      this.setState({ login: localStorage.getItem("login") });
+    }
   }
   componentDidUpdate(prevProps, prevState) {
+    if (prevState !== this.state) {
+      localStorage.setItem("todos", JSON.stringify(this.state.todos));
+    }
     if (prevState.searching !== this.state.searching) {
       ArticlesApi.fetchArticlesWithQuery(this.state.searching)
         .then((articles) => this.setState({ articles }))
@@ -53,17 +71,12 @@ class App extends Component {
   }
 
   deleteTodo = (todoId) => {
-    // axios.delete(`http://localhost:3000/todos/${todoId}`)
-    TodoApi.deleteTodo(todoId).then(() => {
-      this.setState((prevState) => ({
-        todos: prevState.todos.filter((todo) => todo.id !== todoId),
-      }));
-    });
+    this.setState((prevState) => ({
+      todos: prevState.todos.filter((todo) => todo.id !== todoId),
+    }));
   };
 
   onChange = (e) => {
-    console.log("filter", e.target.value);
-
     this.setState({ filter: e.target.value });
   };
 
@@ -74,41 +87,43 @@ class App extends Component {
   };
 
   addNewTodo = (text) => {
+    if (this.state.todos.map((todo) => todo.text).includes(text.trim())) {
+      alert("already exists");
+      return;
+    }
     const todoData = {
       id: shortid.generate(),
-      text,
+      text: text.trim(),
       completed: false,
     };
 
-    // axios
-    //   .post("http://localhost:3000/todos/", todo)
-    TodoApi.addTodo(todoData)
-      .then((todo) => {
-        this.setState(({ todos }) => ({ todos: [todo, ...todos] }));
-      })
-      .catch((error) => this.setState({ error }))
-      .finally(() => this.setState({ isLoading: false }));
-
-    this.toggleModal();
+    this.setState(({ todos }) => ({ todos: [todoData, ...todos] }));
   };
 
-  toggleCompleted = (todoId) => {
-    const todo = this.state.todos.find(({ id }) => id === todoId);
+  toggleCompleted = (id) => {
+    this.setState((state) => {
+      const todos = this.toggleProperty(state, id, "completed");
+      return {
+        todos,
+      };
+    });
+  };
 
-    const { completed } = todo;
-
-    // axios
-    //   .patch(`http://localhost:3000/todos/${todoId}`, { completed: !completed })
-    TodoApi.updateTodo(todoId, { completed: !completed }).then(
-      (updatedTodo) => {
-        this.setState(({ todos }) => ({
-          todos: todos.map((todo) =>
-            todo.id === updatedTodo.id ? updatedTodo : todo
-          ),
-        }));
+  toggleProperty(state, id, propName) {
+    const todos = state.todos.map((todo) => {
+      if (todo.id === id) {
+        return {
+          ...todo,
+          [propName]: !todo[propName],
+        };
       }
-    );
-  };
+
+      return todo;
+    });
+
+    return todos;
+  }
+
   toggleModal = () => {
     this.setState(({ showModal }) => ({ showModal: !showModal }));
   };
@@ -126,6 +141,7 @@ class App extends Component {
       articles,
       isLoading,
       error,
+      login,
       searching,
     } = this.state;
     const visible = todos.filter(({ text }) =>
@@ -133,27 +149,32 @@ class App extends Component {
     );
     return (
       <>
-        <div className="App">
+        {/* <div className="App">
           API
           <Searching searching={searching} onSubmit={this.articlesSearching} />
           {error && <p>Whoops, something went wrong: {error}</p>}
           {isLoading && <BulletList />}
-          {articles.length > 0 && <ArticleList articles={articles} />}
-        </div>
+          {articles.length > 0 && <ArticleList articles={articles} />} 
+        </div> */}
         <div className="App">
           {showModal && (
             <Modal onClose={this.toggleModal}>
               <button onClick={this.toggleModal}>X</button>
-              {/* <SignUpForm
-              onSubmit={this.handleSubmit}
-              onClose={this.toggleModal}
-            /> */}
-              <AddNewTodo onSubmit={this.addNewTodo} />
+              <SignUpForm
+                onSubmit={this.handleSubmit}
+                onClose={this.toggleModal}
+              />
             </Modal>
           )}
-          <button className="button" onClick={this.toggleModal}>
-            {showModal ? "Close modal" : "Add new todo"}
-          </button>
+
+          {!login && (
+            <button className="button" onClick={this.toggleModal}>
+              {!showModal ? "Open registration form" : ""}
+            </button>
+          )}
+          <h1>{login ? `Welcome, ${login}` : ""}</h1>
+
+          <AddNewTodo onSubmit={this.addNewTodo} />
 
           <header className="App-header" />
           <Filter filter={this.state.filter} onChange={this.onChange} />

@@ -25,7 +25,6 @@ class SignUpForm extends Component {
     // Если тип элемента checkbox, берем значение checked,
     // в противном случае value
     this.setState({ [name]: type === "checkbox" ? checked : value });
-    console.log(this.state.checked);
   };
 
   // * Вызывается при отправке формы
@@ -37,6 +36,7 @@ class SignUpForm extends Component {
     this.props.onSubmit({ ...this.state });
     this.props.onClose();
     this.setState({ ...STATE });
+    localStorage.setItem("login", this.state.login);
   };
 
   render() {
@@ -118,7 +118,7 @@ class SignUpForm extends Component {
             onChange={this.handleChange}
           />
         </label>
-        <button type="submit" disabled={!agreed} onClick={this.handleChange}>
+        <button type="submit" disabled={!agreed}>
           Sign up as <b>{login}</b>
         </button>
       </form>

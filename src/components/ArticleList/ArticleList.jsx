@@ -8,8 +8,8 @@ class ArticleList extends PureComponent {
     title: "",
   };
   handleClick = (e) => {
-    console.log("handleClick");
-    console.dir(e.target);
+    // console.log("handleClick");
+    // console.dir(e.target);
     this.setState({
       title: e.target.textContent,
       url: e.target.attributes.href,

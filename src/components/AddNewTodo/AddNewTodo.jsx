@@ -31,8 +31,8 @@ class AddNewTodo extends PureComponent {
             placeholder="Add new todo..."
             onChange={this.handleChange}
           />
+          <button type="submit">Add</button>
         </label>
-        <button type="submit">Add</button>
       </form>
     );
   }
